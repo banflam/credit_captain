@@ -33,6 +33,7 @@ def home(request):
     score = None
     explanation = None
     advice = None
+    user_input = ""
 
     if request.method == "POST":
         user_input = request.POST.get("input_text", "")
@@ -40,10 +41,15 @@ def home(request):
         data = result["structured"]
         explanation = result["explanation"]
         score = calculate_credit_score(data)
+        tier = get_score_tier(score)
         advice = generate_credit_advice(data)
-
-    return render(request, "simulator/home.html", {
+        
+    context = {
         "score": score,
+        "tier": tier,
         "explanation": explanation,
-        "advice": advice
-    })
+        "advice": advice,
+        "user_input": user_input,
+    }
+
+    return render(request, "simulator/home.html", context)

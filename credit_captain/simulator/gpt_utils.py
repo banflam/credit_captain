@@ -22,9 +22,9 @@ Input:
 """
 
     response = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4.1",
         messages=[{"role": "user", "content": prompt}],
-        temperature=0.3,
+        temperature=0.5,
     )
 
     result_text = response.choices[0].message.content.strip()
@@ -53,7 +53,7 @@ Give 2-3 friendly, practical suggestions to help improve their credit score.
 """
 
     response = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4.1",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.5,
     )

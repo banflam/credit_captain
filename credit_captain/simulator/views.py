@@ -2,16 +2,14 @@ from django.shortcuts import render
 from .gpt_utils import parse_user_input_to_structure, generate_credit_advice
 
 def calculate_credit_score(data):
-    score = 680
+    score = 300  # Base score
     if data["late_payments"] > 0:
-        score -= data["late_payments"] * 15
-    if data["credit_utilization"] > 0.3:
-        score -= int((data["credit_utilization"] - 0.3) * 100)
-    if data["credit_age"] < 2:
-        score -= 20
+        score -= data["late_payments"] * 20
+    score -= int(data["credit_utilization"] * 100)  # e.g., 0.3 = -30
     score -= data["inquiries"] * 5
+    score += data["credit_age"] * 10
     if data["has_credit_mix"]:
-        score += 10
+        score += 20
     return max(300, min(score, 850))
 
 def get_score_tier(score):

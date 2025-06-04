@@ -2,6 +2,9 @@ import os
 import json
 import openai
 from openai import OpenAI
+from dotenv import load_dotenv
+
+load_dotenv()
 
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -51,3 +54,23 @@ def parse_user_input_to_structure(user_input):
             "credit_age": 2.0,
             "has_credit_mix": False,
         }
+        
+def generate_credit_advice(data):
+    prompt = f"""
+    You're a financial advisor. Based on this user's credit profile, give them friendly advice on improving their credit score.
+
+    User profile:
+    - Late payments: {data.get("late_payments")}
+    - Credit utilization: {data.get("credit_utilization")}
+    - Inquiries: {data.get("inquiries")}
+    - Credit age: {data.get("credit_age")}
+    - Has credit mix: {data.get("has_credit_mix")}
+
+    Advice:
+    """
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.7
+    )
+    return response.choices[0].message.content

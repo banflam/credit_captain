@@ -25,6 +25,9 @@ def home(request):
     if request.method == 'POST':
         user_input = request.POST.get('input_text')
         structured_data = parse_user_input_to_structure(user_input)
+        
+        print("GPT DATA:", structured_data)
+        
         score = calculate_credit_score(structured_data)
         tier = get_score_tier(score)
         advice = generate_credit_advice(structured_data)

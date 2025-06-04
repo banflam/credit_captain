@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ScoreSense – Credit Simulator</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; background: #f5f7fa; }
+    input, textarea, button { margin-top: 1rem; padding: 0.5rem; width: 100%; max-width: 500px; }
+    .result { margin-top: 2rem; background: #fff; padding: 1rem; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+  </style>
+</head>
+<body>
+  <h1>ScoreSense – Credit Simulator</h1>
+
+  <form method="post">
+    {% csrf_token %}
+    <label for="input_text">Describe your financial activity:</label><br>
+    <textarea name="input_text" rows="4" placeholder="e.g. I missed a payment and maxed out my credit card."></textarea><br>
+    <button type="submit">Simulate Score</button>
+  </form>
+
+  {% if score %}
+  <div class="result">
+    <h3>Your Simulated Credit Score: {{ score }}</h3>
+    <p>Tier: {{ tier }}</p>
+    <p><strong>Reason:</strong> {{ explanation }}</p>
+    <p><strong>Advice:</strong> {{ advice }}</p>
+  </div>
+  {% endif %}
+</body>
+</html>

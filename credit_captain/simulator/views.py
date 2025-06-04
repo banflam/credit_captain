@@ -11,14 +11,37 @@ def calculate_credit_score(data):
     if has_credit_mix is None:
         has_credit_mix = False
 
-    score = 850
+    score = 680 # sane starting score
 
-    score -= int(credit_utilization * 100)  # 0.3 → -30
-    score -= late_payments * 15
+    # Utilization: High impact
+    if credit_utilization >= 0.9:
+        score -= 120
+    elif credit_utilization >= 0.75:
+        score -= 90
+    elif credit_utilization >= 0.5:
+        score -= 60
+    elif credit_utilization >= 0.3:
+        score -= 30
+    else:
+        score += 10  # Reward for low utilization
+
+    # Late payments: Major impact
+    score -= late_payments * 50
+
+    # Credit inquiries: Moderate
     score -= inquiries * 10
-    score += int(credit_age * 5)
+
+    # Credit age: Older is better
+    if credit_age < 1:
+        score -= 40
+    elif credit_age < 3:
+        score -= 20
+    elif credit_age > 5:
+        score += 10
+
+    # Credit mix: Minor boost
     if has_credit_mix:
-        score += 20
+        score += 10
 
     return max(300, min(score, 850))
 

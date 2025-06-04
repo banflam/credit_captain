@@ -48,8 +48,8 @@
       }
 
       #gauge-container {
-        width: 250px;
-        height: 150px;
+        width: 300px;
+        height: 180px;
         margin: 2rem auto 1rem;
       }
 
@@ -65,11 +65,6 @@
     <div class="container">
       <h1>ScoreSense – Credit Simulator</h1>
 
-      {% if score %}
-      <div id="gauge-container">
-        <canvas id="score-gauge"></canvas>
-      </div>
-
       <form method="post">
         {% csrf_token %}
         <label for="input_text">Describe your financial activity:</label>
@@ -83,51 +78,54 @@
         <button type="submit">Simulate Score</button>
       </form>
 
+      {% if score %}
+      <div id="gauge-container">
+        <canvas id="score-gauge"></canvas>
+      </div>
+
       <div class="result">
         <h3>Your Simulated Credit Score: {{ score }}</h3>
         <p><strong>Tier:</strong> {{ tier }}</p>
         <p><strong>Reason:</strong> {{ explanation }}</p>
         <p><strong>Advice:</strong> {{ advice }}</p>
       </div>
+
+      <script>
+        const opts = {
+          angle: 0.15,
+          lineWidth: 0.44,
+          radiusScale: 1,
+          pointer: {
+            length: 0.6,
+            strokeWidth: 0.035,
+            color: "#000000",
+          },
+          staticZones: [
+            { strokeStyle: "#ff0000", min: 300, max: 579 },
+            { strokeStyle: "#f9c802", min: 580, max: 669 },
+            { strokeStyle: "#f9f900", min: 670, max: 739 },
+            { strokeStyle: "#a9d70b", min: 740, max: 799 },
+            { strokeStyle: "#00ff00", min: 800, max: 850 },
+          ],
+          limitMax: true,
+          limitMin: true,
+          highDpiSupport: true,
+          staticLabels: {
+            font: "14px sans-serif",
+            labels: [300, 580, 670, 740, 800, 850],
+            color: "#000000",
+            fractionDigits: 0,
+          },
+        };
+
+        const target = document.getElementById("score-gauge");
+        const gauge = new Gauge(target).setOptions(opts);
+        gauge.maxValue = 850;
+        gauge.setMinValue(300);
+        gauge.animationSpeed = 32;
+        gauge.set({{ score }});
+      </script>
       {% endif %}
     </div>
-
-    {% if score %}
-    <script>
-      const opts = {
-        angle: 0.15,
-        lineWidth: 0.44,
-        radiusScale: 1,
-        pointer: {
-          length: 0.6,
-          strokeWidth: 0.035,
-          color: "#000000",
-        },
-        staticZones: [
-          { strokeStyle: "#ff0000", min: 300, max: 579 },
-          { strokeStyle: "#f9c802", min: 580, max: 669 },
-          { strokeStyle: "#f9f900", min: 670, max: 739 },
-          { strokeStyle: "#a9d70b", min: 740, max: 799 },
-          { strokeStyle: "#00ff00", min: 800, max: 850 },
-        ],
-        limitMax: true,
-        limitMin: true,
-        highDpiSupport: true,
-        staticLabels: {
-          font: "12px sans-serif",
-          labels: [300, 580, 670, 740, 800, 850],
-          color: "#000000",
-          fractionDigits: 0,
-        },
-      };
-
-      const target = document.getElementById("score-gauge");
-      const gauge = new Gauge(target).setOptions(opts);
-      gauge.maxValue = 850;
-      gauge.setMinValue(300);
-      gauge.animationSpeed = 32;
-      gauge.set({{ score }});
-    </script>
-    {% endif %}
   </body>
 </html>

@@ -95,6 +95,7 @@
         <label for="input_text">Describe your financial activity:</label>
         <textarea name="input_text" rows="4" placeholder="e.g. I missed a payment and maxed out my credit card.">{{ user_input }}</textarea>
         <button type="submit">Simulate Score</button>
+        <div id="loadingSpinner" style="display:none; margin-top:1rem; font-weight:bold;"> Simulating...</div>
       </form>
 
       {% if score %}
@@ -123,5 +124,22 @@
       document.getElementById("needle").style.transform = `rotate(${angle}deg)`;
     </script>
     {% endif %}
+    
+
+    <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector("form");
+    const button = form.querySelector("button");
+    const spinner = document.getElementById("loadingSpinner");
+
+    form.addEventListener("submit", () => {
+      button.disabled = true;
+      spinner.style.display = "block";
+    });
+  });
+</script>
+    
+
+
   </body>
 </html>

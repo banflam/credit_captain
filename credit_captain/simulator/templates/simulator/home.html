@@ -65,6 +65,11 @@
     <div class="container">
       <h1>ScoreSense – Credit Simulator</h1>
 
+      {% if score %}
+      <div id="gauge-container">
+        <canvas id="score-gauge"></canvas>
+      </div>
+
       <form method="post">
         {% csrf_token %}
         <label for="input_text">Describe your financial activity:</label>
@@ -77,11 +82,6 @@
         >
         <button type="submit">Simulate Score</button>
       </form>
-
-      {% if score %}
-      <div id="gauge-container">
-        <canvas id="score-gauge"></canvas>
-      </div>
 
       <div class="result">
         <h3>Your Simulated Credit Score: {{ score }}</h3>

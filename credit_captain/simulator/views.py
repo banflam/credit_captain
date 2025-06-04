@@ -34,6 +34,7 @@ def home(request):
     explanation = None
     advice = None
     user_input = ""
+    tier = None
 
     if request.method == "POST":
         user_input = request.POST.get("input_text", "")

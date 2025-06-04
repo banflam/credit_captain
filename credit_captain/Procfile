@@ -1,0 +1,1 @@
+web: gunicorn credit_captain.wsgi:application

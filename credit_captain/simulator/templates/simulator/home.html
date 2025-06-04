@@ -1,30 +1,127 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>ScoreSense – Credit Simulator</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 2rem; background: #f5f7fa; }
-    input, textarea, button { margin-top: 1rem; padding: 0.5rem; width: 100%; max-width: 500px; }
-    .result { margin-top: 2rem; background: #fff; padding: 1rem; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
-  </style>
-</head>
-<body>
-  <h1>ScoreSense – Credit Simulator</h1>
+  <head>
+    <title>ScoreSense – Credit Simulator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f5f7fa;
+        margin: 0;
+        padding: 2rem;
+        text-align: center;
+      }
 
-  <form method="post">
-    {% csrf_token %}
-    <label for="input_text">Describe your financial activity:</label><br>
-    <textarea name="input_text" rows="4" placeholder="e.g. I missed a payment and maxed out my credit card."></textarea><br>
-    <button type="submit">Simulate Score</button>
-  </form>
+      .container {
+        max-width: 600px;
+        margin: auto;
+      }
 
-  {% if score %}
-  <div class="result">
-    <h3>Your Simulated Credit Score: {{ score }}</h3>
-    <p>Tier: {{ tier }}</p>
-    <p><strong>Reason:</strong> {{ explanation }}</p>
-    <p><strong>Advice:</strong> {{ advice }}</p>
-  </div>
-  {% endif %}
-</body>
+      textarea,
+      button {
+        margin-top: 1rem;
+        padding: 0.6rem;
+        width: 100%;
+        max-width: 100%;
+        font-size: 1rem;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        box-sizing: border-box;
+      }
+
+      button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      .result {
+        margin-top: 2rem;
+        background: #fff;
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .gauge {
+        margin: 2rem auto 1rem;
+        width: 250px;
+        height: 125px;
+        position: relative;
+      }
+
+      .gauge .dial {
+        width: 100%;
+        height: 100%;
+        border-top-left-radius: 100% 200%;
+        border-top-right-radius: 100% 200%;
+        background: linear-gradient(to right, red, orange, yellow, green, darkgreen);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .gauge .needle {
+        width: 4px;
+        height: 130px;
+        background: #222;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform-origin: bottom center;
+        transition: transform 1s ease-out;
+      }
+
+      h1 {
+        margin-bottom: 1rem;
+      }
+
+      label {
+        font-weight: bold;
+        display: block;
+        margin-top: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>ScoreSense – Credit Simulator</h1>
+
+      <form method="post">
+        {% csrf_token %}
+        <label for="input_text">Describe your financial activity:</label>
+        <textarea name="input_text" rows="4" placeholder="e.g. I missed a payment and maxed out my credit card.">{{ user_input }}</textarea>
+        <button type="submit">Simulate Score</button>
+      </form>
+
+      {% if score %}
+      <div class="gauge">
+        <div class="dial"></div>
+        <div
+          class="needle"
+          id="needle"
+          style="transform: rotate({{ score|floatformat:0|add:"-300"|divisibleby:"5"|yesno:"-90,0" }}deg);"
+        ></div>
+      </div>
+
+      <div class="result">
+        <h3>Your Simulated Credit Score: {{ score }}</h3>
+        <p><strong>Tier:</strong> {{ tier }}</p>
+        <p><strong>Reason:</strong> {{ explanation }}</p>
+        <p><strong>Advice:</strong> {{ advice }}</p>
+      </div>
+      {% endif %}
+    </div>
+
+    {% if score %}
+    <script>
+      const score = {{ score }};
+      const angle = ((score - 300) / 550) * 180 - 90;
+      document.getElementById("needle").style.transform = `rotate(${angle}deg)`;
+    </script>
+    {% endif %}
+  </body>
 </html>
